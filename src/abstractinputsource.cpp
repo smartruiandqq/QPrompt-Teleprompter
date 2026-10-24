@@ -32,6 +32,7 @@ AbstractInputSource::AbstractInputSource(AppController *controller)
 void AbstractInputSource::m_initializeSource()
 {
     connect(this, &AbstractInputSource::togglePrompter, m_controller, &AppController::togglePrompter);
+    connect(this, &AbstractInputSource::showWindow, m_controller, &AppController::showWindow);
     connect(this, &AbstractInputSource::increaseVelocity, m_controller, &AppController::increaseVelocity);
     connect(this, &AbstractInputSource::decreaseVelocity, m_controller, &AppController::decreaseVelocity);
     connect(this, &AbstractInputSource::pause, m_controller, &AppController::pause);

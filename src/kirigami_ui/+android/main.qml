@@ -275,7 +275,7 @@ Kirigami.ApplicationWindow {
                 }
                 Kirigami.Action {
                     visible: ["android", "ios", "tvos", "ipados", "qnx"].indexOf(Qt.platform.os)===-1
-                    text: qsTr("Scroll throttle settings", "Open 'scroll settings' from main menu and global menu actions")
+                    text: qsTr("Prompter settings", "Open prompter settings from main menu and global menu actions")
                     icon.name: "gnumeric-object-scrollbar"
                     onTriggered: {
                         globalMenu.close()

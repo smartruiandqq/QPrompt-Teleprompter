@@ -33,6 +33,15 @@ import com.cuperino.qprompt 1.0
 Kirigami.ApplicationWindow {
     id: root
     property bool __fullScreen: false
+    Connections {
+        target: AppController
+        function onShowWindow() {
+            if (root.visibility === Window.Hidden || root.visibility === Window.Minimized)
+                root.showNormal();
+            root.raise();
+            root.requestActivate();
+        }
+    }
     property bool __fakeFullscreen: false
     property bool __autoFullScreen: false
     readonly property bool fullScreenOrFakeFullScreen: visibility===Kirigami.ApplicationWindow.FullScreen || __fakeFullscreen && __fullScreen && visibility===Kirigami.ApplicationWindow.Maximized
@@ -292,7 +301,7 @@ Kirigami.ApplicationWindow {
                 }
                 Kirigami.Action {
                     visible: ["android", "ios", "tvos", "ipados", "qnx"].indexOf(Qt.platform.os)===-1
-                    text: qsTr("Scroll throttle settings", "Open 'scroll settings' from main menu and global menu actions")
+                    text: qsTr("Prompter settings", "Open prompter settings from main menu and global menu actions")
                     icon.name: "gnumeric-object-scrollbar"
                     onTriggered: {
                         globalMenu.close()

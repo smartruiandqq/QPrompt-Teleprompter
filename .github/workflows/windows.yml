@@ -1,0 +1,86 @@
+name: Windows build
+
+on:
+  workflow_dispatch:
+  push:
+
+concurrency:
+  group: windows-build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows x64
+    runs-on: windows-2022
+    timeout-minutes: 180
+    steps:
+      - name: Enable long paths
+        shell: pwsh
+        run: |
+          git config --global core.longpaths true
+          git config --global core.autocrlf false
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          # Full history so the tags referenced by the bundled KDE frameworks
+          # are available to FetchContent.
+          fetch-depth: 0
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          arch: 'win64_msvc2022_64'
+          modules: 'qtwebsockets qtshadertools qttools'
+          cache: true
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR" `
+            -DCMAKE_INSTALL_PREFIX="$PWD/install" `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_CONFIGURATION_TYPES=Release `
+            -DBUILD_TESTING=OFF
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release --parallel
+
+      - name: Install
+        shell: pwsh
+        run: cmake --install build --config Release
+
+      - name: Deploy Qt runtime
+        shell: pwsh
+        run: |
+          $exe = Join-Path $PWD "install\bin\QPrompt.exe"
+          if (-not (Test-Path $exe)) {
+            throw "QPrompt.exe not found at $exe"
+          }
+          & "$env:QT_ROOT_DIR\bin\windeployqt.exe" --release --compiler-runtime --no-translations --qmldir "$PWD\src" $exe
+          if ($LASTEXITCODE -ne 0) {
+            throw "windeployqt failed with exit code $LASTEXITCODE"
+          }
+
+      - name: Prune development files
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force install\include, install\lib\cmake, install\lib\pkgconfig, install\share\man, install\share\doc -ErrorAction SilentlyContinue
+
+      - name: Package
+        shell: pwsh
+        run: Compress-Archive -Path install\* -DestinationPath QPrompt-windows-x64.zip -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: QPrompt-windows-x64
+          path: QPrompt-windows-x64.zip
+          if-no-files-found: error

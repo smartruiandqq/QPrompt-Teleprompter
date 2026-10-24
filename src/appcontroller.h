@@ -49,6 +49,7 @@ public:
 signals:
     // Prompter
     void togglePrompter();
+    void showWindow();
     void increaseVelocity();
     void decreaseVelocity();
     void pause();

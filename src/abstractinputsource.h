@@ -33,6 +33,7 @@ public:
     AbstractInputSource(AppController *controller);
 signals:
     void togglePrompter(bool checked=false);
+    void showWindow(bool checked=false);
     void increaseVelocity(bool checked=false);
     void decreaseVelocity(bool checked=false);
     void pause(bool checked=false);

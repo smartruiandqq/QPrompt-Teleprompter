@@ -866,7 +866,7 @@ ToolBar {
             //visible: parseInt(viewport.prompter.state)===Prompter.States.Editing
             ToolButton {
                 id: wheelThrottleSettingsButton
-                ToolTip.text: qsTr("Scroll wheel settings", "Editor toolbar button tooltip")
+                ToolTip.text: qsTr("Prompter settings", "Editor toolbar button tooltip")
                 ToolTip.visible: hovered
                 ToolTip.delay: Kirigami.Units.toolTipDelay
                 visible: !(Qt.platform.os==="android" || Qt.platform.os==="ios")

@@ -163,6 +163,8 @@ Flickable {
     property bool winding: false
     property int atEndAction: Prompter.AtEndActions.Stop
     property int atEndLoopDelay: 3
+    property int pageScrollLines: 0
+    readonly property real lineHeight: editor.cursorRectangle.height > 0 ? editor.cursorRectangle.height : Math.max(1, fontSize * 1.2)
     property int keyBeingPressed: 0
     property bool __scrollAsDial: root.__scrollAsDial
     property bool __invertArrowKeys: root.__invertArrowKeys
@@ -262,6 +264,10 @@ Flickable {
         category: "atEnd"
         property alias atEndAction: prompter.atEndAction
         property alias atEndLoopDelay: prompter.atEndLoopDelay
+    }
+    Settings {
+        category: "navigation"
+        property alias pageScrollLines: prompter.pageScrollLines
     }
     Settings {
         category: "prompterPlacement"

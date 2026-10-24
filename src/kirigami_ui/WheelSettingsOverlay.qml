@@ -24,17 +24,24 @@ import org.kde.kirigami 2.11 as Kirigami
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
+import com.cuperino.qprompt 1.0
+
 Kirigami.OverlaySheet {
     id: wheelSettings
 
     header: Kirigami.Heading {
-        text: qsTr("Wheel and touchpad scroll settings")
+        text: qsTr("Prompter settings")
         level: 1
     }
 
     onOpened: {
         cursorAutoHide.reset();
         root.pageStack.currentItem.editor.enabled = false;
+        if (root.pageStack.currentItem.prompter) {
+            pageScrollLinesSpinBox.value = root.pageStack.currentItem.prompter.pageScrollLines;
+            atEndActionComboBox.currentIndex = root.pageStack.currentItem.prompter.atEndAction;
+            atEndLoopDelaySpinBox.value = root.pageStack.currentItem.prompter.atEndLoopDelay;
+        }
     }
     onClosed: {
         cursorAutoHide.restart();
@@ -105,6 +112,72 @@ Kirigami.OverlaySheet {
                 color: "#EED"
                 Layout.leftMargin: Kirigami.Units.smallSpacing
                 Layout.rightMargin: Kirigami.Units.smallSpacing
+            }
+        }
+        RowLayout {
+            Label {
+                text: qsTr("Lines per page turn (Page Up/Down)")
+            }
+            SpinBox {
+                id: pageScrollLinesSpinBox
+                value: root.pageStack.currentItem.prompter.pageScrollLines
+                from: 0
+                to: 100
+                editable: true
+                onValueModified: {
+                    focus: true
+                    root.pageStack.currentItem.prompter.pageScrollLines = value
+                }
+                Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                Material.theme: Material.Dark
+            }
+        }
+        RowLayout {
+            Label {
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+                text: qsTr("Set lines per page turn to 0 to use a quarter of the prompter height.")
+                color: "#EED"
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+            }
+        }
+        RowLayout {
+            Label {
+                text: qsTr("At end of prompt")
+            }
+            ComboBox {
+                id: atEndActionComboBox
+                model: [qsTr("Stop"), qsTr("Return to edit mode"), qsTr("Loop")]
+                currentIndex: root.pageStack.currentItem.prompter.atEndAction
+                onActivated: root.pageStack.currentItem.prompter.atEndAction = index
+                Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                Material.theme: Material.Dark
+            }
+        }
+        RowLayout {
+            enabled: root.pageStack.currentItem.prompter.atEndAction === Prompter.AtEndActions.Loop
+            Label {
+                text: qsTr("Loop delay (seconds)")
+            }
+            SpinBox {
+                id: atEndLoopDelaySpinBox
+                value: root.pageStack.currentItem.prompter.atEndLoopDelay
+                from: 1
+                to: 60
+                editable: true
+                onValueModified: {
+                    focus: true
+                    root.pageStack.currentItem.prompter.atEndLoopDelay = value
+                }
+                Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.smallSpacing
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                Material.theme: Material.Dark
             }
         }
     }

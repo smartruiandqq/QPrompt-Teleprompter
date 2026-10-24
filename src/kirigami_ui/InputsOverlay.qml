@@ -570,6 +570,7 @@ Kirigami.OverlaySheet {
 
                 Component.onCompleted: {
                     hotkeyInputTogglePrompter.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.TogglePrompter) });
+                    hotkeyInputShowWindow.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.ShowAppWindow) });
                     hotkeyInputDecreaseVelocity.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.DecreaseVelocity) });
                     hotkeyInputIncreaseVelocity.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.IncreaseVelocity) });
                     hotkeyInputStop.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.Stop) });
@@ -608,6 +609,13 @@ Kirigami.OverlaySheet {
                     function onToggleButtonsOff() { hotkeyGrid.toggleButtonsOff(); }
                     function onSetKey(key, modifiers) {
                         AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.TogglePrompter);
+                    }
+                }
+                Connections {
+                    target: hotkeyInputShowWindow.item
+                    function onToggleButtonsOff() { hotkeyGrid.toggleButtonsOff(); }
+                    function onSetKey(key, modifiers) {
+                        AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.ShowAppWindow);
                     }
                 }
                 Connections {
@@ -840,6 +848,14 @@ Kirigami.OverlaySheet {
                 }
                 Loader {
                     id: hotkeyInputTogglePrompter
+                    asynchronous: true
+                    Layout.fillWidth: true
+                }
+                Label {
+                    text: qsTr("Show QPrompt Window")
+                }
+                Loader {
+                    id: hotkeyInputShowWindow
                     asynchronous: true
                     Layout.fillWidth: true
                 }
