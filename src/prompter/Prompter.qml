@@ -126,6 +126,8 @@ Flickable {
     // At start and at end rules
     readonly property bool __atStart: position<=__jitterMargin-topMargin+2
     readonly property bool __atEnd: position>=editor.height-topMargin+fontSize+__jitterMargin-2
+    readonly property real __manualPageEndPosition: Math.max(__jitterMargin - topMargin + 2, contentHeight + bottomMargin - height)
+    readonly property bool __atManualPageEnd: position >= __manualPageEndPosition - 1
     readonly property int __speedLimit: __vw * 100
     readonly property Scale __flips: Flip{}
     // Tools to debug __atStart and __atEnd
@@ -656,7 +658,7 @@ Flickable {
 
     function skipForwards() {
         // Move Forward
-        if (this.__atEnd) {
+        if (this.__atManualPageEnd) {
             loopAfterManualPageTurn()
             return
         }
@@ -673,7 +675,7 @@ Flickable {
     }
 
     function loopAfterManualPageTurn() {
-        if (!loopManualPageTurns || parseInt(prompter.state) === Prompter.States.Editing)
+        if (!loopManualPageTurns)
             return
         __i=0;
         __iBackup=0;
@@ -704,12 +706,12 @@ Flickable {
 
     function pageTurnForwards() {
         // Page Forwards by the configured number of lines
-        if (this.__atEnd) {
+        if (this.__atManualPageEnd) {
             loopAfterManualPageTurn()
             return
         }
         const step = pageScrollLines > 0 ? pageScrollLines * lineHeight : Math.max(lineHeight, height - lineHeight)
-        const maxPosition = editor.height - topMargin + fontSize + __jitterMargin - 2
+        const maxPosition = __manualPageEndPosition
         if (prompter.__play && __i!==0) {
             __iBackup = __i
             __i=0;
