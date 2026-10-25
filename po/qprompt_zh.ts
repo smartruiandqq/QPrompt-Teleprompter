@@ -767,24 +767,30 @@
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="398"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="407"/>
         <location filename="../src/kirigami_ui/InputsOverlay.qml" line="920"/>
         <source>Page Backwards</source>
         <comment>Move back one page while prompting or editing</comment>
         <translation>向后翻页</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="406"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="415"/>
         <location filename="../src/kirigami_ui/InputsOverlay.qml" line="928"/>
         <source>Page Forwards</source>
         <comment>Move forward one page while prompting or editing</comment>
         <translation>向前翻页</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="414"/>
-        <source>Turn Page (while prompting)</source>
-        <comment>Custom key that turns the page by the configured number of lines</comment>
-        <translation>翻页（提词时）</translation>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="423"/>
+        <source>Turn Page Backwards (while prompting)</source>
+        <comment>Custom key that turns one page backwards by the configured number of lines</comment>
+        <translation>向后翻页（提词时）</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="431"/>
+        <source>Turn Page Forwards (while prompting)</source>
+        <comment>Custom key that turns one page forwards by the configured number of lines</comment>
+        <translation>向前翻页（提词时）</translation>
     </message>
     <message>
         <location filename="../src/kirigami_ui/InputsOverlay.qml" line="125"/>
@@ -792,15 +798,15 @@
         <translation>设置按键</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="422"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="936"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="439"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="953"/>
         <source>Go to Previous Marker</source>
         <comment>Skip to closest marker behind of current position</comment>
         <translation>转到上一个标记</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="430"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="944"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="447"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="961"/>
         <source>Go to Next Marker</source>
         <comment>Skip to closest marker ahead of current position</comment>
         <translation>转到下一个标记</translation>

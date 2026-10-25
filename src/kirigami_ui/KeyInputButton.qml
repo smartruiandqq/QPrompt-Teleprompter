@@ -70,6 +70,7 @@ RowLayout {
                 [prompter.keys.fastForward, prompter.keys.fastForwardModifiers],
                 [prompter.keys.skipBackwards, prompter.keys.skipBackwardsModifiers],
                 [prompter.keys.skipForward, prompter.keys.skipForwardModifiers],
+                [prompter.keys.pageTurnBackwards, prompter.keys.pageTurnBackwardsModifiers],
                 [prompter.keys.pageTurn, prompter.keys.pageTurnModifiers],
                 [prompter.keys.previousMarker, prompter.keys.previousMarkerModifiers],
                 [prompter.keys.nextMarker, prompter.keys.nextMarkerModifiers],

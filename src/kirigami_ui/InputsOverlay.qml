@@ -122,7 +122,8 @@ Kirigami.OverlaySheet {
                     keyInputFastForward.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.fastForward, prompter.keys.fastForwardModifiers) });
                     keyInputMoveBackwards.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.skipBackwards, prompter.keys.skipBackwardsModifiers) });
                     keyInputMoveForward.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.skipForward, prompter.keys.skipForwardModifiers) });
-                    keyInputPageTurn.setSource("KeyInputButton.qml", { "text": prompter.keys.pageTurn === Qt.Key_unknown ? qsTr("Set key") : qmlutil.keyToString(prompter.keys.pageTurn, prompter.keys.pageTurnModifiers), "allowConflicts": true });
+                    keyInputPageTurn.setSource("KeyInputButton.qml", { "text": prompter.keys.pageTurnBackwards === Qt.Key_unknown ? qsTr("Set key") : qmlutil.keyToString(prompter.keys.pageTurnBackwards, prompter.keys.pageTurnBackwardsModifiers), "allowConflicts": true });
+                    keyInputPageTurnForwards.setSource("KeyInputButton.qml", { "text": prompter.keys.pageTurn === Qt.Key_unknown ? qsTr("Set key") : qmlutil.keyToString(prompter.keys.pageTurn, prompter.keys.pageTurnModifiers), "allowConflicts": true });
                     keyInputPreviousMarker.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.previousMarker, prompter.keys.previousMarkerModifiers) });
                     keyInputNextMarker.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.nextMarker, prompter.keys.nextMarkerModifiers) });
                     keyInputSetVelocity0.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.setVelocity0, prompter.keys.setVelocity0Modifiers) });
@@ -219,6 +220,14 @@ Kirigami.OverlaySheet {
                 }
                 Connections {
                     target: keyInputPageTurn.item
+                    function onToggleButtonsOff() { buttonGrid.toggleButtonsOff(); }
+                    function onSetKey(key, modifiers) {
+                        prompter.keys.pageTurnBackwards = key;
+                        prompter.keys.pageTurnBackwardsModifiers = modifiers;
+                    }
+                }
+                Connections {
+                    target: keyInputPageTurnForwards.item
                     function onToggleButtonsOff() { buttonGrid.toggleButtonsOff(); }
                     function onSetKey(key, modifiers) {
                         prompter.keys.pageTurn = key;
@@ -411,10 +420,18 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Turn Page (while prompting)", "Custom key that turns the page by the configured number of lines")
+                    text: qsTr("Turn Page Backwards (while prompting)", "Custom key that turns one page backwards by the configured number of lines")
                 }
                 Loader {
                     id: keyInputPageTurn
+                    asynchronous: true
+                    Layout.fillWidth: true
+                }
+                Label {
+                    text: qsTr("Turn Page Forwards (while prompting)", "Custom key that turns one page forwards by the configured number of lines")
+                }
+                Loader {
+                    id: keyInputPageTurnForwards
                     asynchronous: true
                     Layout.fillWidth: true
                 }

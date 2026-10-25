@@ -226,6 +226,8 @@ Flickable {
         property int skipBackwardsModifiers: Qt.NoModifier
         property int skipForward: Qt.Key_PageDown
         property int skipForwardModifiers: Qt.NoModifier
+        property int pageTurnBackwards: Qt.Key_unknown
+        property int pageTurnBackwardsModifiers: Qt.NoModifier
         property int pageTurn: Qt.Key_unknown
         property int pageTurnModifiers: Qt.NoModifier
         property int previousMarker: Qt.Key_PageUp
@@ -636,6 +638,38 @@ Flickable {
 
     function skipBackwards() {
         // Move back
+        if (!this.__atStart) {
+            if (prompter.__play && __i!==0)
+                __iBackup = __i
+            __i=0;
+            prompter.position = prompter.position
+            scrollBar.decrease()
+            __i=__iBackup
+            if (prompter.__play)
+                prompter.position = __destination
+            else
+                prompter.position = prompter.position
+        }
+    }
+
+    function skipForwards() {
+        // Move Forward
+        if (!this.__atEnd) {
+            if (prompter.__play && __i!==0)
+                __iBackup = __i
+            __i=0;
+            prompter.position = prompter.position
+            scrollBar.increase()
+            __i=__iBackup
+            if (prompter.__play)
+                prompter.position = __destination
+            else
+                prompter.position = prompter.position
+        }
+    }
+
+    function pageTurnBackwards() {
+        // Page Backwards by the configured number of lines
         if (this.__atStart)
             return
         const step = pageScrollLines > 0 ? pageScrollLines * lineHeight : Math.max(lineHeight, height - lineHeight)
@@ -656,8 +690,8 @@ Flickable {
             prompter.position = __destination
     }
 
-    function skipForwards() {
-        // Move Forward
+    function pageTurnForwards() {
+        // Page Forwards by the configured number of lines
         if (this.__atEnd) {
             if (parseInt(prompter.state) !== Prompter.States.Editing) {
                 __i=0;
@@ -2196,9 +2230,14 @@ Flickable {
                     if (parseInt(prompter.state) === Prompter.States.Prompting) {
                         // The custom page-turn key must work even when it is a digit or another
                         // character that the editor would otherwise type.
+                        if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key === keys.pageTurnBackwards && event.modifiers === keys.pageTurnBackwardsModifiers) {
+                            event.accepted = true;
+                            prompter.pageTurnBackwards();
+                            return;
+                        }
                         if (keys.pageTurn !== Qt.Key_unknown && event.key === keys.pageTurn && event.modifiers === keys.pageTurnModifiers) {
                             event.accepted = true;
-                            prompter.skipForwards();
+                            prompter.pageTurnForwards();
                             return;
                         }
                         // Assumption: We're in edit while prompting mode.
@@ -2801,8 +2840,12 @@ Flickable {
     // Key bindings
     Keys.onPressed: function(event) {
         if (parseInt(prompter.state)===Prompter.States.Prompting) {
+            if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
+                prompter.pageTurnBackwards();
+                return
+            }
             if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
-                prompter.skipForwards();
+                prompter.pageTurnForwards();
                 return
             }
             if (event.key===keys.increaseVelocity && event.modifiers===keys.increaseVelocityModifiers || event.key===Qt.Key_VolumeDowm) {
@@ -2933,7 +2976,7 @@ Flickable {
             // }
 
             // Perform keyCode marker search.
-            if (event.key !== keys.pageTurn) {
+            if (event.key !== keys.pageTurn && event.key !== keys.pageTurnBackwards) {
                 let namedAnchorPosition = document.keySearch(event.key);
                 if (namedAnchorPosition!==-1)
                     prompter.goTo(namedAnchorPosition);
@@ -2992,13 +3035,16 @@ Flickable {
         else if (event.key===keys.toggle && event.modifiers===keys.toggleModifiers)
             // Toggle state
             prompter.toggle();
+        else if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
+            prompter.pageTurnBackwards();
+        }
+        else if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
+            prompter.pageTurnForwards();
+        }
         else if (event.key===keys.skipBackwards && event.modifiers===keys.skipBackwardsModifiers) {
             prompter.skipBackwards();
         }
         else if (event.key===keys.skipForward && event.modifiers===keys.skipForwardModifiers) {
-            prompter.skipForwards();
-        }
-        else if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
             prompter.skipForwards();
         }
         else if (event.key===keys.previousMarker && event.modifiers===keys.previousMarkerModifiers)
