@@ -386,7 +386,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Move Backwards", "Skip to earlier text while prompting or editing")
+                    text: qsTr("Page Backwards", "Move back one page while prompting or editing")
                 }
                 Loader {
                     id: keyInputMoveBackwards
@@ -394,7 +394,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Move Forward", "Skip to later text while prompting or editing")
+                    text: qsTr("Page Forwards", "Move forward one page while prompting or editing")
                 }
                 Loader {
                     id: keyInputMoveForward
@@ -570,7 +570,6 @@ Kirigami.OverlaySheet {
 
                 Component.onCompleted: {
                     hotkeyInputTogglePrompter.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.TogglePrompter) });
-                    hotkeyInputShowWindow.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.ShowAppWindow) });
                     hotkeyInputDecreaseVelocity.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.DecreaseVelocity) });
                     hotkeyInputIncreaseVelocity.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.IncreaseVelocity) });
                     hotkeyInputStop.setSource("KeyInputButton.qml", { "text": AppController.globalShortcutKey(GlobalHotkeys.Stop) });
@@ -609,13 +608,6 @@ Kirigami.OverlaySheet {
                     function onToggleButtonsOff() { hotkeyGrid.toggleButtonsOff(); }
                     function onSetKey(key, modifiers) {
                         AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.TogglePrompter);
-                    }
-                }
-                Connections {
-                    target: hotkeyInputShowWindow.item
-                    function onToggleButtonsOff() { hotkeyGrid.toggleButtonsOff(); }
-                    function onSetKey(key, modifiers) {
-                        AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.ShowAppWindow);
                     }
                 }
                 Connections {
@@ -852,14 +844,6 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Show QPrompt Window")
-                }
-                Loader {
-                    id: hotkeyInputShowWindow
-                    asynchronous: true
-                    Layout.fillWidth: true
-                }
-                Label {
                     text: qsTr("Decrease Velocity")
                 }
                 Loader {
@@ -916,7 +900,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Move Backwards", "Skip to earlier text while prompting or editing")
+                    text: qsTr("Page Backwards", "Move back one page while prompting or editing")
                 }
                 Loader {
                     id: hotkeyInputMoveBackwards
@@ -924,7 +908,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                 }
                 Label {
-                    text: qsTr("Move Forward", "Skip to later text while prompting or editing")
+                    text: qsTr("Page Forwards", "Move forward one page while prompting or editing")
                 }
                 Loader {
                     id: hotkeyInputMoveForward

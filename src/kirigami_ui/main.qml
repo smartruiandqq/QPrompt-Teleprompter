@@ -38,15 +38,6 @@ Kirigami.ApplicationWindow {
         if (Qt.platform.os === "wasm")
             AppController.wasm.toggleBrowserFullscreen();
     }
-    Connections {
-        target: AppController
-        function onShowWindow() {
-            if (root.visibility === Window.Hidden || root.visibility === Window.Minimized)
-                root.showNormal();
-            root.raise();
-            root.requestActivate();
-        }
-    }
     property bool __fakeFullscreen: false
     property bool __autoFullScreen: false
     readonly property bool fullScreenOrFakeFullScreen: visibility===Kirigami.ApplicationWindow.FullScreen || __fakeFullscreen && __fullScreen && visibility===Kirigami.ApplicationWindow.Maximized

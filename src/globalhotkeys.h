@@ -40,7 +40,6 @@ public:
     GlobalHotkeys(AppController *controller);
     enum Action {
         TogglePrompter,
-        ShowAppWindow,
         IncreaseVelocity,
         DecreaseVelocity,
         Pause,
@@ -78,7 +77,6 @@ public:
 protected:
 #if defined(QHotkey_FOUND)
     QHotkey *m_togglePrompterHotkey;
-    QHotkey *m_showWindowHotkey;
     QHotkey *m_increaseVelocityHotkey;
     QHotkey *m_decreaseVelocityHotkey;
     QHotkey *m_pauseHotkey;
@@ -113,7 +111,6 @@ protected:
     QHotkey *m_setVelocityTo10Hotkey;
 #endif
     QAction *m_togglePrompterAction;
-    QAction *m_showWindowAction;
     QAction *m_increaseVelocityAction;
     QAction *m_decreaseVelocityAction;
     QAction *m_pauseAction;

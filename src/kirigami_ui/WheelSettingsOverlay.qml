@@ -138,7 +138,7 @@ Kirigami.OverlaySheet {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
-                text: qsTr("Set lines per page turn to 0 to use a quarter of the prompter height.")
+                text: qsTr("Set lines per page turn to 0 to use one full page (minus one line).")
                 color: "#EED"
                 Layout.leftMargin: Kirigami.Units.smallSpacing
                 Layout.rightMargin: Kirigami.Units.smallSpacing

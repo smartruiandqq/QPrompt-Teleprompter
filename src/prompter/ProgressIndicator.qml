@@ -32,7 +32,8 @@ ScrollBar {
     leftInset: 0
     rightInset: 0
     interactive: !opaqueScroller || root.__isMobile ? false : true
-    stepSize: (prompter.pageScrollLines > 0 ? prompter.pageScrollLines * prompter.lineHeight : prompter.height / 4) / Math.max(1, prompter.contentHeight + prompter.topMargin + prompter.bottomMargin)
+    readonly property real pageStepPixels: prompter.pageScrollLines > 0 ? prompter.pageScrollLines * prompter.lineHeight : Math.max(prompter.lineHeight, prompter.height - prompter.lineHeight)
+    stepSize: pageStepPixels / Math.max(1, prompter.contentHeight + prompter.topMargin + prompter.bottomMargin)
     policy: ScrollBar.AlwaysOn
     //opacity: opaqueScroller ? 0.40 : 1
     contentItem: Rectangle {

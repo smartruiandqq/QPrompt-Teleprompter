@@ -34,7 +34,6 @@
 GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(controller)
 #if defined(QHotkey_FOUND)
     , m_togglePrompterHotkey(new QHotkey(this))
-    , m_showWindowHotkey(new QHotkey(this))
     , m_increaseVelocityHotkey(new QHotkey(this))
     , m_decreaseVelocityHotkey(new QHotkey(this))
     , m_pauseHotkey(new QHotkey(this))
@@ -69,7 +68,6 @@ GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(co
     , m_setVelocityTo10Hotkey(new QHotkey(this))
 #endif
     , m_togglePrompterAction(new QAction(tr("Toggle Prompter"), this))
-    , m_showWindowAction(new QAction(tr("Show QPrompt Window"), this))
     , m_increaseVelocityAction(new QAction(tr("Increase Velocity"), this))
     , m_decreaseVelocityAction(new QAction(tr("Decrease Velocity"), this))
     , m_pauseAction(new QAction(tr("Pause"), this))
@@ -77,8 +75,8 @@ GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(co
     , m_reverseAction(new QAction(tr("Reverse"), this))
     , m_rewindAction(new QAction(tr("Rewind"), this))
     , m_fastForwardAction(new QAction(tr("Fast Forward"), this))
-    , m_skipBackwardsAction(new QAction(tr("Skip Backwards"), this))
-    , m_skipForwardsAction(new QAction(tr("Skip Forwards"), this))
+    , m_skipBackwardsAction(new QAction(tr("Page Backwards"), this))
+    , m_skipForwardsAction(new QAction(tr("Page Forwards"), this))
     , m_previousMarkerAction(new QAction(tr("Previous Marker"), this))
     , m_nextMarkerAction(new QAction(tr("Next Marker"), this))
     , m_setVelocityToNeg10Action(new QAction(tr("Set Velocity to -10"), this))
@@ -123,18 +121,6 @@ QString GlobalHotkeys::globalShortcutKey(Action action)
 #endif
 #ifdef Use_GlobalAccel
     shortcuts = KGlobalAccel::self()->shortcut(m_togglePrompterAction);
-    if (shortcuts.isEmpty())
-        return "";
-    return shortcuts.constFirst().toString();
-#endif
-    break;
-    case ShowAppWindow:
-#ifdef QHotkey_FOUND
-    if (platform != "wayland")
-        return m_showWindowHotkey->shortcut().toString();
-#endif
-#ifdef Use_GlobalAccel
-    shortcuts = KGlobalAccel::self()->shortcut(m_showWindowAction);
     if (shortcuts.isEmpty())
         return "";
     return shortcuts.constFirst().toString();
@@ -537,7 +523,6 @@ void GlobalHotkeys::setGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modifie
 void GlobalHotkeys::m_initializeSource() {
     // Readable name
     m_togglePrompterAction->setObjectName(QLatin1String("togglePrompter"));
-    m_showWindowAction->setObjectName(QLatin1String("showWindow"));
     m_increaseVelocityAction->setObjectName(QLatin1String("increaseVelocity"));
     m_decreaseVelocityAction->setObjectName(QLatin1String("decreaseVelocity"));
     m_pauseAction->setObjectName(QLatin1String("pause"));
@@ -584,10 +569,6 @@ void GlobalHotkeys::m_initializeSource() {
     key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(TogglePrompter), Qt::Key_F9).toInt());
     modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(TogglePrompter), Qt::ControlModifier).toInt());
     m_setGlobalShortcut(key, modifier, TogglePrompter, true);
-
-    key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(ShowAppWindow), Qt::Key_F10).toInt());
-    modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(ShowAppWindow), Qt::ControlModifier).toInt());
-    m_setGlobalShortcut(key, modifier, ShowAppWindow, true);
 
     key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(IncreaseVelocity), Qt::Key_Down).toInt());
     modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(IncreaseVelocity), Qt::ControlModifier).toInt());
@@ -726,7 +707,6 @@ void GlobalHotkeys::m_initializeSource() {
     connect(m_fastForwardAction, &QAction::toggled, this, &AbstractInputSource::fastForward);
     // Connections for trigger actions
     connect(m_togglePrompterAction, &QAction::triggered, this, &AbstractInputSource::togglePrompter);
-    connect(m_showWindowAction, &QAction::triggered, this, &AbstractInputSource::showWindow);
     connect(m_increaseVelocityAction, &QAction::triggered, this, &AbstractInputSource::increaseVelocity);
     connect(m_decreaseVelocityAction, &QAction::triggered, this, &AbstractInputSource::decreaseVelocity);
     connect(m_pauseAction, &QAction::triggered, this, &AbstractInputSource::pause);
@@ -803,7 +783,6 @@ void GlobalHotkeys::m_initializeSource() {
     connect(m_rewindHotkey, &QHotkey::activated, m_rewindAction, &QAction::toggle);
     connect(m_fastForwardHotkey, &QHotkey::activated, m_fastForwardAction, &QAction::toggle);
     connect(m_togglePrompterHotkey, &QHotkey::activated, m_togglePrompterAction, &QAction::trigger);
-    connect(m_showWindowHotkey, &QHotkey::activated, m_showWindowAction, &QAction::trigger);
     connect(m_increaseVelocityHotkey, &QHotkey::activated, m_increaseVelocityAction, &QAction::trigger);
     connect(m_decreaseVelocityHotkey, &QHotkey::activated, m_decreaseVelocityAction, &QAction::trigger);
     connect(m_pauseHotkey, &QHotkey::activated, m_pauseAction, &QAction::trigger);
@@ -868,14 +847,6 @@ void GlobalHotkeys::m_setGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modif
 #endif
 #ifdef Use_GlobalAccel
         m_setActionShortcut(key, modifiers, m_togglePrompterAction, setAsDefault);
-#endif
-        return;
-    case ShowAppWindow:
-#ifdef QHotkey_FOUND
-        m_setHotkeyShortcut(key, modifiers, m_showWindowHotkey);
-#endif
-#ifdef Use_GlobalAccel
-        m_setActionShortcut(key, modifiers, m_showWindowAction, setAsDefault);
 #endif
         return;
     case IncreaseVelocity:
