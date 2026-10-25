@@ -670,7 +670,7 @@ Kirigami.OverlaySheet {
                     target: hotkeyInputMoveForward.item
                     function onToggleButtonsOff() { hotkeyGrid.toggleButtonsOff(); }
                     function onSetKey(key, modifiers) {
-                        AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.SkipForward);
+                        AppController.setGlobalShortcut(key, modifiers, GlobalHotkeys.SkipForwards);
                     }
                 }
                 Connections {
