@@ -164,6 +164,7 @@ Flickable {
     property int atEndAction: Prompter.AtEndActions.Stop
     property int atEndLoopDelay: 3
     property int pageScrollLines: 0
+    property bool loopManualPageTurns: false
     readonly property real lineHeight: editor.cursorRectangle.height > 0 ? editor.cursorRectangle.height : Math.max(1, fontSize * 1.2)
     property int keyBeingPressed: 0
     property bool __scrollAsDial: root.__scrollAsDial
@@ -272,6 +273,7 @@ Flickable {
     Settings {
         category: "navigation"
         property alias pageScrollLines: prompter.pageScrollLines
+        property alias loopManualPageTurns: prompter.loopManualPageTurns
     }
     Settings {
         category: "prompterPlacement"
@@ -654,18 +656,28 @@ Flickable {
 
     function skipForwards() {
         // Move Forward
-        if (!this.__atEnd) {
-            if (prompter.__play && __i!==0)
-                __iBackup = __i
-            __i=0;
-            prompter.position = prompter.position
-            scrollBar.increase()
-            __i=__iBackup
-            if (prompter.__play)
-                prompter.position = __destination
-            else
-                prompter.position = prompter.position
+        if (this.__atEnd) {
+            loopAfterManualPageTurn()
+            return
         }
+        if (prompter.__play && __i!==0)
+            __iBackup = __i
+        __i=0;
+        prompter.position = prompter.position
+        scrollBar.increase()
+        __i=__iBackup
+        if (prompter.__play)
+            prompter.position = __destination
+        else
+            prompter.position = prompter.position
+    }
+
+    function loopAfterManualPageTurn() {
+        if (!loopManualPageTurns || parseInt(prompter.state) === Prompter.States.Editing)
+            return
+        __i=0;
+        __iBackup=0;
+        manualLoopAnimation.start()
     }
 
     function pageTurnBackwards() {
@@ -693,11 +705,7 @@ Flickable {
     function pageTurnForwards() {
         // Page Forwards by the configured number of lines
         if (this.__atEnd) {
-            if (parseInt(prompter.state) !== Prompter.States.Editing) {
-                __i=0;
-                __iBackup=0;
-                manualLoopAnimation.start()
-            }
+            loopAfterManualPageTurn()
             return
         }
         const step = pageScrollLines > 0 ? pageScrollLines * lineHeight : Math.max(lineHeight, height - lineHeight)

@@ -51,38 +51,20 @@ Kirigami.OverlaySheet {
 
     ColumnLayout {
 
-        TabBar {
-            id: inputSettingsTabs
-            currentIndex: listView.currentIndex
-            TabButton {
-                text: qsTr("Keyboard Inputs")
-                onClicked: listView.currentIndex = 0
-            }
-            TabButton {
-                text: qsTr("Global Hotkeys")
-                onClicked: listView.currentIndex = 1
-            }
-            Layout.fillWidth: true
-            Material.theme: Material.Dark
-        }
-        Rectangle {
-            color: "#292929"
-            height: 1
-            Layout.fillWidth: true
-        }
         ListView {
             id: listView
             clip: true
             model: pointerSettingsTabModel
-            currentIndex: PointerSettings.States.Arrow
+            currentIndex: 0
             orientation: ListView.Horizontal
             highlightRangeMode: ListView.StrictlyEnforceRange
             snapMode: ListView.SnapOneItem
             highlightMoveVelocity: 2000
             maximumFlickVelocity: 20000
-            height: keyConfigurationOverlay.height - inputSettingsTabs.height - 68
+            height: keyConfigurationOverlay.height - 68
             cacheBuffer: 1
             keyNavigationEnabled: false
+            interactive: false
             Layout.fillWidth: true
         }
     }

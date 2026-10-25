@@ -180,5 +180,17 @@ Kirigami.OverlaySheet {
                 Material.theme: Material.Dark
             }
         }
+        RowLayout {
+            Label {
+                text: qsTr("Return to top after last page")
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
+            Switch {
+                checked: root.pageStack.currentItem.prompter.loopManualPageTurns
+                onToggled: root.pageStack.currentItem.prompter.loopManualPageTurns = checked
+                Material.theme: Material.Dark
+            }
+        }
     }
 }

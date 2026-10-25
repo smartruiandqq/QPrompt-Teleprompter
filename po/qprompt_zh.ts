@@ -2751,6 +2751,11 @@ Double click or start prompting to fix in place.</source>
         <source>Loop delay (seconds)</source>
         <translation>循环延迟（秒）</translation>
     </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="187"/>
+        <source>Return to top after last page</source>
+        <translation>翻页到底后回到顶部</translation>
+    </message>
 </context>
 <context>
     <name>main</name>
