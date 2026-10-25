@@ -43,6 +43,8 @@ signals:
     void fastForward(bool checked);
     void skipBackwards(bool checked=false);
     void skipForwards(bool checked=false);
+    void pageTurnBackwards(bool checked=false);
+    void pageTurnForwards(bool checked=false);
     void previousMarker(bool checked=false);
     void nextMarker(bool checked=false);
 protected:

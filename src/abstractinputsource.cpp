@@ -42,6 +42,8 @@ void AbstractInputSource::m_initializeSource()
     connect(this, &AbstractInputSource::fastForward, m_controller, &AppController::fastForward);
     connect(this, &AbstractInputSource::skipBackwards, m_controller, &AppController::skipBackwards);
     connect(this, &AbstractInputSource::skipForwards, m_controller, &AppController::skipForwards);
+    connect(this, &AbstractInputSource::pageTurnBackwards, m_controller, &AppController::pageTurnBackwards);
+    connect(this, &AbstractInputSource::pageTurnForwards, m_controller, &AppController::pageTurnForwards);
     connect(this, &AbstractInputSource::previousMarker, m_controller, &AppController::previousMarker);
     connect(this, &AbstractInputSource::nextMarker, m_controller, &AppController::nextMarker);
 }

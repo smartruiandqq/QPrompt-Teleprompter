@@ -43,6 +43,8 @@ GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(co
     , m_fastForwardHotkey(new QHotkey(this))
     , m_skipBackwardsHotkey(new QHotkey(this))
     , m_skipForwardsHotkey(new QHotkey(this))
+    , m_pageTurnBackwardsHotkey(new QHotkey(this))
+    , m_pageTurnForwardsHotkey(new QHotkey(this))
     , m_previousMarkerHotkey(new QHotkey(this))
     , m_nextMarkerHotkey(new QHotkey(this))
     , m_setVelocityToNeg10Hotkey(new QHotkey(this))
@@ -77,6 +79,8 @@ GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(co
     , m_fastForwardAction(new QAction(tr("Fast Forward"), this))
     , m_skipBackwardsAction(new QAction(tr("Page Backwards"), this))
     , m_skipForwardsAction(new QAction(tr("Page Forwards"), this))
+    , m_pageTurnBackwardsAction(new QAction(tr("Turn Page Backwards"), this))
+    , m_pageTurnForwardsAction(new QAction(tr("Turn Page Forwards"), this))
     , m_previousMarkerAction(new QAction(tr("Previous Marker"), this))
     , m_nextMarkerAction(new QAction(tr("Next Marker"), this))
     , m_setVelocityToNeg10Action(new QAction(tr("Set Velocity to -10"), this))
@@ -229,6 +233,30 @@ QString GlobalHotkeys::globalShortcutKey(Action action)
 #endif
 #ifdef Use_GlobalAccel
     shortcuts = KGlobalAccel::self()->shortcut(m_skipForwardsAction);
+    if (shortcuts.isEmpty())
+        return "";
+    return shortcuts.constFirst().toString();
+#endif
+    break;
+    case PageTurnBackwards:
+#ifdef QHotkey_FOUND
+    if (platform != "wayland")
+        return m_pageTurnBackwardsHotkey->shortcut().toString();
+#endif
+#ifdef Use_GlobalAccel
+    shortcuts = KGlobalAccel::self()->shortcut(m_pageTurnBackwardsAction);
+    if (shortcuts.isEmpty())
+        return "";
+    return shortcuts.constFirst().toString();
+#endif
+    break;
+    case PageTurnForwards:
+#ifdef QHotkey_FOUND
+    if (platform != "wayland")
+        return m_pageTurnForwardsHotkey->shortcut().toString();
+#endif
+#ifdef Use_GlobalAccel
+    shortcuts = KGlobalAccel::self()->shortcut(m_pageTurnForwardsAction);
     if (shortcuts.isEmpty())
         return "";
     return shortcuts.constFirst().toString();
@@ -532,6 +560,8 @@ void GlobalHotkeys::m_initializeSource() {
     m_fastForwardAction->setObjectName(QLatin1String("fastForward"));
     m_skipBackwardsAction->setObjectName(QLatin1String("skipBackwards"));
     m_skipForwardsAction->setObjectName(QLatin1String("skipForwards"));
+    m_pageTurnBackwardsAction->setObjectName(QLatin1String("pageTurnBackwards"));
+    m_pageTurnForwardsAction->setObjectName(QLatin1String("pageTurnForwards"));
     m_previousMarkerAction->setObjectName(QLatin1String("previousMarker"));
     m_nextMarkerAction->setObjectName(QLatin1String("nextMarker"));
     m_setVelocityToNeg10Action->setObjectName(QLatin1String("setVelocityToNeg10"));
@@ -605,6 +635,14 @@ void GlobalHotkeys::m_initializeSource() {
     key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(SkipForwards), Qt::Key_PageDown).toInt());
     modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(SkipForwards), Qt::ControlModifier).toInt());
     m_setGlobalShortcut(key, modifier, SkipForwards, true);
+
+    key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(PageTurnBackwards), Qt::Key_unknown).toInt());
+    modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(PageTurnBackwards), Qt::NoModifier).toInt());
+    m_setGlobalShortcut(key, modifier, PageTurnBackwards, true);
+
+    key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(PageTurnForwards), Qt::Key_unknown).toInt());
+    modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(PageTurnForwards), Qt::NoModifier).toInt());
+    m_setGlobalShortcut(key, modifier, PageTurnForwards, true);
 
     key = static_cast<Qt::Key>(settings.value(QLatin1String("hotkey/key") + metaEnum.valueToKey(PreviousMarker), Qt::Key_Comma).toInt());
     modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(PreviousMarker), Qt::ControlModifier).toInt());
@@ -714,6 +752,8 @@ void GlobalHotkeys::m_initializeSource() {
     connect(m_reverseAction, &QAction::triggered, this, &AbstractInputSource::reverse);
     connect(m_skipBackwardsAction, &QAction::triggered, this, &AbstractInputSource::skipBackwards);
     connect(m_skipForwardsAction, &QAction::triggered, this, &AbstractInputSource::skipForwards);
+    connect(m_pageTurnBackwardsAction, &QAction::triggered, this, &AbstractInputSource::pageTurnBackwards);
+    connect(m_pageTurnForwardsAction, &QAction::triggered, this, &AbstractInputSource::pageTurnForwards);
     connect(m_previousMarkerAction, &QAction::triggered, this, &AbstractInputSource::previousMarker);
     connect(m_nextMarkerAction, &QAction::triggered, this, &AbstractInputSource::nextMarker);
     connect(m_setVelocityToNeg10Action, &QAction::triggered, [this] () {
@@ -790,6 +830,8 @@ void GlobalHotkeys::m_initializeSource() {
     connect(m_reverseHotkey, &QHotkey::activated, m_reverseAction, &QAction::trigger);
     connect(m_skipBackwardsHotkey, &QHotkey::activated, m_skipBackwardsAction, &QAction::trigger);
     connect(m_skipForwardsHotkey, &QHotkey::activated, m_skipForwardsAction, &QAction::trigger);
+    connect(m_pageTurnBackwardsHotkey, &QHotkey::activated, m_pageTurnBackwardsAction, &QAction::trigger);
+    connect(m_pageTurnForwardsHotkey, &QHotkey::activated, m_pageTurnForwardsAction, &QAction::trigger);
     connect(m_previousMarkerHotkey, &QHotkey::activated, m_previousMarkerAction, &QAction::trigger);
     connect(m_nextMarkerHotkey, &QHotkey::activated, m_nextMarkerAction, &QAction::trigger);
     connect(m_setVelocityToNeg10Hotkey, &QHotkey::activated, m_setVelocityToNeg10Action, &QAction::trigger);
@@ -919,6 +961,22 @@ void GlobalHotkeys::m_setGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modif
 #endif
 #ifdef Use_GlobalAccel
         m_setActionShortcut(key, modifiers, m_skipForwardsAction, setAsDefault);
+#endif
+        return;
+    case PageTurnBackwards:
+#ifdef QHotkey_FOUND
+        m_setHotkeyShortcut(key, modifiers, m_pageTurnBackwardsHotkey);
+#endif
+#ifdef Use_GlobalAccel
+        m_setActionShortcut(key, modifiers, m_pageTurnBackwardsAction, setAsDefault);
+#endif
+        return;
+    case PageTurnForwards:
+#ifdef QHotkey_FOUND
+        m_setHotkeyShortcut(key, modifiers, m_pageTurnForwardsHotkey);
+#endif
+#ifdef Use_GlobalAccel
+        m_setActionShortcut(key, modifiers, m_pageTurnForwardsAction, setAsDefault);
 #endif
         return;
     case PreviousMarker:

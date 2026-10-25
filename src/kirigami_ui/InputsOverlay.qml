@@ -388,34 +388,66 @@ Kirigami.OverlaySheet {
                 Label {
                     text: qsTr("Page Backwards", "Move back one page while prompting or editing")
                 }
-                Loader {
-                    id: keyInputMoveBackwards
-                    asynchronous: true
+                RowLayout {
                     Layout.fillWidth: true
+                    Loader {
+                        id: keyInputMoveBackwards
+                        asynchronous: true
+                        Layout.fillWidth: true
+                    }
+                    CheckBox {
+                        text: qsTr("Global")
+                        checked: prompter.keys.skipBackwardsGlobal
+                        onToggled: prompter.keys.skipBackwardsGlobal = checked
+                    }
                 }
                 Label {
                     text: qsTr("Page Forwards", "Move forward one page while prompting or editing")
                 }
-                Loader {
-                    id: keyInputMoveForward
-                    asynchronous: true
+                RowLayout {
                     Layout.fillWidth: true
+                    Loader {
+                        id: keyInputMoveForward
+                        asynchronous: true
+                        Layout.fillWidth: true
+                    }
+                    CheckBox {
+                        text: qsTr("Global")
+                        checked: prompter.keys.skipForwardGlobal
+                        onToggled: prompter.keys.skipForwardGlobal = checked
+                    }
                 }
                 Label {
                     text: qsTr("Turn Page Backwards (while prompting)", "Custom key that turns one page backwards by the configured number of lines")
                 }
-                Loader {
-                    id: keyInputPageTurn
-                    asynchronous: true
+                RowLayout {
                     Layout.fillWidth: true
+                    Loader {
+                        id: keyInputPageTurn
+                        asynchronous: true
+                        Layout.fillWidth: true
+                    }
+                    CheckBox {
+                        text: qsTr("Global")
+                        checked: prompter.keys.pageTurnBackwardsGlobal
+                        onToggled: prompter.keys.pageTurnBackwardsGlobal = checked
+                    }
                 }
                 Label {
                     text: qsTr("Turn Page Forwards (while prompting)", "Custom key that turns one page forwards by the configured number of lines")
                 }
-                Loader {
-                    id: keyInputPageTurnForwards
-                    asynchronous: true
+                RowLayout {
                     Layout.fillWidth: true
+                    Loader {
+                        id: keyInputPageTurnForwards
+                        asynchronous: true
+                        Layout.fillWidth: true
+                    }
+                    CheckBox {
+                        text: qsTr("Global")
+                        checked: prompter.keys.pageTurnGlobal
+                        onToggled: prompter.keys.pageTurnGlobal = checked
+                    }
                 }
                 Label {
                     text: qsTr("Go to Previous Marker", "Skip to closest marker behind of current position")

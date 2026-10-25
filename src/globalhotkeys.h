@@ -49,6 +49,8 @@ public:
         FastForward,
         SkipBackwards,
         SkipForwards,
+        PageTurnBackwards,
+        PageTurnForwards,
         PreviousMarker,
         NextMarker,
         VelocityToNeg10,
@@ -86,6 +88,8 @@ protected:
     QHotkey *m_fastForwardHotkey;
     QHotkey *m_skipBackwardsHotkey;
     QHotkey *m_skipForwardsHotkey;
+    QHotkey *m_pageTurnBackwardsHotkey;
+    QHotkey *m_pageTurnForwardsHotkey;
     QHotkey *m_previousMarkerHotkey;
     QHotkey *m_nextMarkerHotkey;
     QHotkey *m_setVelocityToNeg10Hotkey;
@@ -120,6 +124,8 @@ protected:
     QAction *m_fastForwardAction;
     QAction *m_skipBackwardsAction;
     QAction *m_skipForwardsAction;
+    QAction *m_pageTurnBackwardsAction;
+    QAction *m_pageTurnForwardsAction;
     QAction *m_previousMarkerAction;
     QAction *m_nextMarkerAction;
     QAction *m_setVelocityToNeg10Action;

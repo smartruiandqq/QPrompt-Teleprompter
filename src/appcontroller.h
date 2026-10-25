@@ -58,6 +58,8 @@ signals:
     void fastForward();
     void skipBackwards();
     void skipForwards();
+    void pageTurnBackwards();
+    void pageTurnForwards();
     void previousMarker();
     void nextMarker();
     void setVelocity(int velocity);

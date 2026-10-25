@@ -719,6 +719,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="1"/>
+        <source>Global</source>
+        <translation>全局</translation>
+    </message>
+    <message>
         <location filename="../src/kirigami_ui/InputsOverlay.qml" line="325"/>
         <location filename="../src/kirigami_ui/InputsOverlay.qml" line="839"/>
         <source>Toggle Prompter State</source>
