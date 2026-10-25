@@ -451,6 +451,12 @@
         <comment>Next reload starts at 10:11:12</comment>
         <translation>下次重新加载开始于 &lt;pre&gt;%1&lt;/pre&gt;</translation>
     </message>
+    <message>
+        <location filename="../src/kirigami_ui/EditorToolbar.qml" line="869"/>
+        <source>Prompter settings</source>
+        <comment>Editor toolbar button tooltip</comment>
+        <translation>提词器设置</translation>
+    </message>
 </context>
 <context>
     <name>Find</name>
@@ -570,13 +576,13 @@
     </message>
     <message>
         <location filename="../src/globalhotkeys.cpp" line="78"/>
-        <source>Skip Backwards</source>
-        <translation type="unfinished"></translation>
+        <source>Page Backwards</source>
+        <translation>向后翻页</translation>
     </message>
     <message>
         <location filename="../src/globalhotkeys.cpp" line="79"/>
-        <source>Skip Forwards</source>
-        <translation type="unfinished"></translation>
+        <source>Page Forwards</source>
+        <translation>向前翻页</translation>
     </message>
     <message>
         <location filename="../src/globalhotkeys.cpp" line="80"/>
@@ -761,29 +767,40 @@
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="389"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="903"/>
-        <source>Move Backwards</source>
-        <comment>Skip to earlier text while prompting or editing</comment>
-        <translation>向后移动</translation>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="398"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="920"/>
+        <source>Page Backwards</source>
+        <comment>Move back one page while prompting or editing</comment>
+        <translation>向后翻页</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="397"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="911"/>
-        <source>Move Forward</source>
-        <comment>Skip to later text while prompting or editing</comment>
-        <translation>向前移动</translation>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="406"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="928"/>
+        <source>Page Forwards</source>
+        <comment>Move forward one page while prompting or editing</comment>
+        <translation>向前翻页</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="405"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="919"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="414"/>
+        <source>Turn Page (while prompting)</source>
+        <comment>Custom key that turns the page by the configured number of lines</comment>
+        <translation>翻页（提词时）</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="125"/>
+        <source>Set key</source>
+        <translation>设置按键</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="422"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="936"/>
         <source>Go to Previous Marker</source>
         <comment>Skip to closest marker behind of current position</comment>
         <translation>转到上一个标记</translation>
     </message>
     <message>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="413"/>
-        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="927"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="430"/>
+        <location filename="../src/kirigami_ui/InputsOverlay.qml" line="944"/>
         <source>Go to Next Marker</source>
         <comment>Skip to closest marker ahead of current position</comment>
         <translation>转到下一个标记</translation>
@@ -2657,8 +2674,8 @@ Double click or start prompting to fix in place.</source>
     <name>WheelSettingsOverlay</name>
     <message>
         <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="31"/>
-        <source>Wheel and touchpad scroll settings</source>
-        <translation>滚轮和触摸板滚动设置</translation>
+        <source>Prompter settings</source>
+        <translation>提词器设置</translation>
     </message>
     <message>
         <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="48"/>
@@ -2692,6 +2709,41 @@ Double click or start prompting to fix in place.</source>
         <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="104"/>
         <source>Enable throttling for use with touchpads, disable for precise scolling.</source>
         <translation>启用节流以与触摸板一起使用，禁用以进行精确滚动。</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="119"/>
+        <source>Lines per page turn</source>
+        <translation>每次翻页行数</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="131"/>
+        <source>Set lines per page turn to 0 to use one full page (minus one line).</source>
+        <translation>将每次翻页行数设为 0 以使用整页（少一行）。</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="149"/>
+        <source>At end of prompt</source>
+        <translation>提词结束时</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="153"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="153"/>
+        <source>Return to edit mode</source>
+        <translation>返回编辑模式</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="153"/>
+        <source>Loop</source>
+        <translation>循环</translation>
+    </message>
+    <message>
+        <location filename="../src/kirigami_ui/WheelSettingsOverlay.qml" line="165"/>
+        <source>Loop delay (seconds)</source>
+        <translation>循环延迟（秒）</translation>
     </message>
 </context>
 <context>
@@ -2782,9 +2834,9 @@ Double click or start prompting to fix in place.</source>
         <location filename="../src/kirigami_ui/main.qml" line="308"/>
         <location filename="../src/kirigami_ui/+android/main.qml" line="278"/>
         <location filename="../src/kirigami_ui/+windows/main.qml" line="295"/>
-        <source>Scroll throttle settings</source>
-        <comment>Open &apos;scroll settings&apos; from main menu and global menu actions</comment>
-        <translation>滚动油门设置</translation>
+        <source>Prompter settings</source>
+        <comment>Open prompter settings from main menu and global menu actions</comment>
+        <translation>提词器设置</translation>
     </message>
     <message>
         <location filename="../src/kirigami_ui/main.qml" line="316"/>

@@ -30,6 +30,7 @@ RowLayout {
 
     property alias checked: keyInputButton.checked
     property alias text: keyInputButton.text
+    property bool allowConflicts: false
 
     signal clicked()
     signal toggleButtonsOff()
@@ -69,6 +70,7 @@ RowLayout {
                 [prompter.keys.fastForward, prompter.keys.fastForwardModifiers],
                 [prompter.keys.skipBackwards, prompter.keys.skipBackwardsModifiers],
                 [prompter.keys.skipForward, prompter.keys.skipForwardModifiers],
+                [prompter.keys.pageTurn, prompter.keys.pageTurnModifiers],
                 [prompter.keys.previousMarker, prompter.keys.previousMarkerModifiers],
                 [prompter.keys.nextMarker, prompter.keys.nextMarkerModifiers],
                 [prompter.keys.toggle, prompter.keys.toggleModifiers],
@@ -85,10 +87,12 @@ RowLayout {
             ]
             // Return invalid if key is in use
             let flag = false;
-            for (let i=0; i<actions.length; i++) {
-                if ( actions[i][0]===key && actions[i][1]===modifiers ) {
-                    flag = true;
-                    break;
+            if (!allowConflicts) {
+                for (let i=0; i<actions.length; i++) {
+                    if ( actions[i][0]!==Qt.Key_unknown && actions[i][0]===key && actions[i][1]===modifiers ) {
+                        flag = true;
+                        break;
+                    }
                 }
             }
             // The following inputs will not be considered valid on their own

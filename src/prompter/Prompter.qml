@@ -226,6 +226,8 @@ Flickable {
         property int skipBackwardsModifiers: Qt.NoModifier
         property int skipForward: Qt.Key_PageDown
         property int skipForwardModifiers: Qt.NoModifier
+        property int pageTurn: Qt.Key_unknown
+        property int pageTurnModifiers: Qt.NoModifier
         property int previousMarker: Qt.Key_PageUp
         property int previousMarkerModifiers: Qt.ControlModifier
         property int nextMarker: Qt.Key_PageDown
@@ -292,9 +294,8 @@ Flickable {
     }
     Connections {
         target: AppController
-        function interalFocusElsewhere() {
-            let flag = false;
-            if (root.pageStack.layers.depth > 1 ||
+        function interalDialogOpen() {
+            return root.pageStack.layers.depth > 1 ||
                 root.pageStack.currentItem.markersDrawer.drawerOpen ||
                 root.pageStack.currentItem.countdownConfiguration.opened ||
                 root.pageStack.currentItem.keyConfigurationOverlay.opened ||
@@ -304,10 +305,11 @@ Flickable {
                 layoutDirectionSettings.opened ||
                 languageSettings.opened ||
                 wheelSettings.opened ||
-                root.pageStack.currentItem.find.enabled ||
-                (parseInt(root.pageStack.currentItem.prompter.state)===Prompter.States.Prompting && root.pageStack.currentItem.editor.focus) )
-                flag = true;
-            return flag;
+                root.pageStack.currentItem.find.enabled;
+        }
+        function interalFocusElsewhere() {
+            return interalDialogOpen() ||
+                (parseInt(root.pageStack.currentItem.prompter.state)===Prompter.States.Prompting && root.pageStack.currentItem.editor.focus);
         }
         function onTogglePrompter() {
             if (!interalFocusElsewhere())
@@ -342,11 +344,11 @@ Flickable {
                 prompter.fastForward();
         }
         function onSkipBackwards() {
-            if (!interalFocusElsewhere())
+            if (!interalDialogOpen())
                 prompter.skipBackwards();
         }
         function onSkipForwards() {
-            if (!interalFocusElsewhere())
+            if (!interalDialogOpen())
                 prompter.skipForwards();
         }
         function onPreviousMarker() {
@@ -634,34 +636,52 @@ Flickable {
 
     function skipBackwards() {
         // Move back
-        if (!this.__atStart) {
-            if (prompter.__play && __i!==0)
-                __iBackup = __i
+        if (this.__atStart)
+            return
+        const step = pageScrollLines > 0 ? pageScrollLines * lineHeight : Math.max(lineHeight, height - lineHeight)
+        const minPosition = __jitterMargin - topMargin + 2
+        if (prompter.__play && __i!==0) {
+            __iBackup = __i
             __i=0;
             prompter.position = prompter.position
-            scrollBar.decrease()
+            prompter.position = Math.max(prompter.position - step, minPosition)
             __i=__iBackup
-            if (prompter.__play)
-                prompter.position = __destination
-            else
-                prompter.position = prompter.position
+            prompter.position = __destination
+            return
         }
+        __i=0;
+        prompter.position = Math.max(prompter.position - step, minPosition)
+        __i=__iBackup;
+        if (prompter.__play)
+            prompter.position = __destination
     }
 
     function skipForwards() {
         // Move Forward
-        if (!this.__atEnd) {
-            if (prompter.__play && __i!==0)
-                __iBackup = __i
+        if (this.__atEnd) {
+            if (parseInt(prompter.state) !== Prompter.States.Editing) {
+                __i=0;
+                __iBackup=0;
+                manualLoopAnimation.start()
+            }
+            return
+        }
+        const step = pageScrollLines > 0 ? pageScrollLines * lineHeight : Math.max(lineHeight, height - lineHeight)
+        const maxPosition = editor.height - topMargin + fontSize + __jitterMargin - 2
+        if (prompter.__play && __i!==0) {
+            __iBackup = __i
             __i=0;
             prompter.position = prompter.position
-            scrollBar.increase()
+            prompter.position = Math.min(prompter.position + step, maxPosition)
             __i=__iBackup
-            if (prompter.__play)
-                prompter.position = __destination
-            else
-                prompter.position = prompter.position
+            prompter.position = __destination
+            return
         }
+        __i=0;
+        prompter.position = Math.min(prompter.position + step, maxPosition)
+        __i=__iBackup;
+        if (prompter.__play)
+            prompter.position = __destination
     }
 
     function setVelocity(velocity: int, event: var) {
@@ -977,6 +997,14 @@ Flickable {
                 prompter.toggle();
             }
         }
+    }
+    NumberAnimation {
+        id: manualLoopAnimation
+        target: prompter
+        property: "position"
+        to: __jitterMargin - topMargin + 1
+        duration: Units.VeryLongDuration
+        easing.type: Easing.InOutQuart
     }
     NumberAnimation on position {
         id: reset
@@ -2166,6 +2194,13 @@ Flickable {
                     // Prompter related keys are processed first for faster response times.
                     // Assumption: Editor is focused.
                     if (parseInt(prompter.state) === Prompter.States.Prompting) {
+                        // The custom page-turn key must work even when it is a digit or another
+                        // character that the editor would otherwise type.
+                        if (keys.pageTurn !== Qt.Key_unknown && event.key === keys.pageTurn && event.modifiers === keys.pageTurnModifiers) {
+                            event.accepted = true;
+                            prompter.skipForwards();
+                            return;
+                        }
                         // Assumption: We're in edit while prompting mode.
                         // If moving cursor would place it out of bounds that are practical for editing, prevent motion and prevent event from floating up to prompter, which would trigger a change in velocity.
                         if (event.key === Qt.Key_Right && editor.cursorPosition > editor.positionAt(editor.width, prompter.position+overlay.height) - 1
@@ -2766,6 +2801,10 @@ Flickable {
     // Key bindings
     Keys.onPressed: function(event) {
         if (parseInt(prompter.state)===Prompter.States.Prompting) {
+            if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
+                prompter.skipForwards();
+                return
+            }
             if (event.key===keys.increaseVelocity && event.modifiers===keys.increaseVelocityModifiers || event.key===Qt.Key_VolumeDowm) {
                 // Increase Velocity
                 if (prompter.__invertArrowKeys)
@@ -2894,9 +2933,11 @@ Flickable {
             // }
 
             // Perform keyCode marker search.
-            let namedAnchorPosition = document.keySearch(event.key);
-            if (namedAnchorPosition!==-1)
-                prompter.goTo(namedAnchorPosition);
+            if (event.key !== keys.pageTurn) {
+                let namedAnchorPosition = document.keySearch(event.key);
+                if (namedAnchorPosition!==-1)
+                    prompter.goTo(namedAnchorPosition);
+            }
             //// Undo and redo key bindings
             //if (event.matches(StandardKey.Undo))
             //    document.undo();
@@ -2955,6 +2996,9 @@ Flickable {
             prompter.skipBackwards();
         }
         else if (event.key===keys.skipForward && event.modifiers===keys.skipForwardModifiers) {
+            prompter.skipForwards();
+        }
+        else if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
             prompter.skipForwards();
         }
         else if (event.key===keys.previousMarker && event.modifiers===keys.previousMarkerModifiers)

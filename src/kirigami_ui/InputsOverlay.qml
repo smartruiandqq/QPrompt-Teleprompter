@@ -122,6 +122,7 @@ Kirigami.OverlaySheet {
                     keyInputFastForward.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.fastForward, prompter.keys.fastForwardModifiers) });
                     keyInputMoveBackwards.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.skipBackwards, prompter.keys.skipBackwardsModifiers) });
                     keyInputMoveForward.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.skipForward, prompter.keys.skipForwardModifiers) });
+                    keyInputPageTurn.setSource("KeyInputButton.qml", { "text": prompter.keys.pageTurn === Qt.Key_unknown ? qsTr("Set key") : qmlutil.keyToString(prompter.keys.pageTurn, prompter.keys.pageTurnModifiers), "allowConflicts": true });
                     keyInputPreviousMarker.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.previousMarker, prompter.keys.previousMarkerModifiers) });
                     keyInputNextMarker.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.nextMarker, prompter.keys.nextMarkerModifiers) });
                     keyInputSetVelocity0.setSource("KeyInputButton.qml", { "text": qmlutil.keyToString(prompter.keys.setVelocity0, prompter.keys.setVelocity0Modifiers) });
@@ -214,6 +215,14 @@ Kirigami.OverlaySheet {
                     function onSetKey(key, modifiers) {
                         prompter.keys.skipForward = key;
                         prompter.keys.skipForwardModifiers = modifiers;
+                    }
+                }
+                Connections {
+                    target: keyInputPageTurn.item
+                    function onToggleButtonsOff() { buttonGrid.toggleButtonsOff(); }
+                    function onSetKey(key, modifiers) {
+                        prompter.keys.pageTurn = key;
+                        prompter.keys.pageTurnModifiers = modifiers;
                     }
                 }
                 Connections {
@@ -398,6 +407,14 @@ Kirigami.OverlaySheet {
                 }
                 Loader {
                     id: keyInputMoveForward
+                    asynchronous: true
+                    Layout.fillWidth: true
+                }
+                Label {
+                    text: qsTr("Turn Page (while prompting)", "Custom key that turns the page by the configured number of lines")
+                }
+                Loader {
+                    id: keyInputPageTurn
                     asynchronous: true
                     Layout.fillWidth: true
                 }

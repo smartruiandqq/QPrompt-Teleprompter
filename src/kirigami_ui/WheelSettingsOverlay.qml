@@ -116,7 +116,7 @@ Kirigami.OverlaySheet {
         }
         RowLayout {
             Label {
-                text: qsTr("Lines per page turn (Page Up/Down)")
+                text: qsTr("Lines per page turn")
             }
             SpinBox {
                 id: pageScrollLinesSpinBox
