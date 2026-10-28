@@ -743,7 +743,7 @@ void GlobalHotkeys::m_initializeSource() {
     // its persisted shortcuts registered in the background, because they can
     // consume keys intended for the normal in-window bindings. The four page
     // actions are registered later by Prompter.qml only while their individual
-    // Global checkboxes are enabled and QPrompt is not the active window.
+    // Global checkboxes are enabled.
     for (int action = TogglePrompter; action <= VelocityTo10; ++action) {
         m_setGlobalShortcut(Qt::Key_unknown,
                             Qt::NoModifier,

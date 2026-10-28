@@ -277,14 +277,13 @@ Flickable {
                                         action)
     }
     function syncGlobalPageShortcuts() {
-        // Keep the original local key path while QPrompt is active. Registering
-        // only while inactive also prevents one key press from being handled by
-        // both the local and global input paths.
-        const enableGlobal = !root.active
-        setPageGlobalShortcut(enableGlobal && keys.skipBackwardsGlobal, keys.skipBackwards, keys.skipBackwardsModifiers, GlobalHotkeys.SkipBackwards)
-        setPageGlobalShortcut(enableGlobal && keys.skipForwardGlobal, keys.skipForward, keys.skipForwardModifiers, GlobalHotkeys.SkipForwards)
-        setPageGlobalShortcut(enableGlobal && keys.pageTurnBackwardsGlobal, keys.pageTurnBackwards, keys.pageTurnBackwardsModifiers, GlobalHotkeys.PageTurnBackwards)
-        setPageGlobalShortcut(enableGlobal && keys.pageTurnGlobal, keys.pageTurn, keys.pageTurnModifiers, GlobalHotkeys.PageTurnForwards)
+        // Claim enabled global shortcuts for the whole lifetime of the app.
+        // Registering only after QPrompt loses focus leaves a race in which the
+        // newly activated application can claim the same shortcut first.
+        setPageGlobalShortcut(keys.skipBackwardsGlobal, keys.skipBackwards, keys.skipBackwardsModifiers, GlobalHotkeys.SkipBackwards)
+        setPageGlobalShortcut(keys.skipForwardGlobal, keys.skipForward, keys.skipForwardModifiers, GlobalHotkeys.SkipForwards)
+        setPageGlobalShortcut(keys.pageTurnBackwardsGlobal, keys.pageTurnBackwards, keys.pageTurnBackwardsModifiers, GlobalHotkeys.PageTurnBackwards)
+        setPageGlobalShortcut(keys.pageTurnGlobal, keys.pageTurn, keys.pageTurnModifiers, GlobalHotkeys.PageTurnForwards)
     }
     Component.onCompleted: syncGlobalPageShortcuts()
     Connections {
@@ -301,10 +300,6 @@ Flickable {
         function onPageTurnChanged() { prompter.syncGlobalPageShortcuts() }
         function onPageTurnModifiersChanged() { prompter.syncGlobalPageShortcuts() }
         function onPageTurnGlobalChanged() { prompter.syncGlobalPageShortcuts() }
-    }
-    Connections {
-        target: root
-        function onActiveChanged() { prompter.syncGlobalPageShortcuts() }
     }
     Settings {
         category: "atEnd"
@@ -2287,12 +2282,12 @@ Flickable {
                     if (parseInt(prompter.state) === Prompter.States.Prompting) {
                         // The custom page-turn key must work even when it is a digit or another
                         // character that the editor would otherwise type.
-                        if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key === keys.pageTurnBackwards && event.modifiers === keys.pageTurnBackwardsModifiers) {
+                        if (!keys.pageTurnBackwardsGlobal && keys.pageTurnBackwards !== Qt.Key_unknown && event.key === keys.pageTurnBackwards && event.modifiers === keys.pageTurnBackwardsModifiers) {
                             event.accepted = true;
                             prompter.pageTurnBackwards();
                             return;
                         }
-                        if (keys.pageTurn !== Qt.Key_unknown && event.key === keys.pageTurn && event.modifiers === keys.pageTurnModifiers) {
+                        if (!keys.pageTurnGlobal && keys.pageTurn !== Qt.Key_unknown && event.key === keys.pageTurn && event.modifiers === keys.pageTurnModifiers) {
                             event.accepted = true;
                             prompter.pageTurnForwards();
                             return;
@@ -2897,11 +2892,11 @@ Flickable {
     // Key bindings
     Keys.onPressed: function(event) {
         if (parseInt(prompter.state)===Prompter.States.Prompting) {
-            if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
+            if (!keys.pageTurnBackwardsGlobal && keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
                 prompter.pageTurnBackwards();
                 return
             }
-            if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
+            if (!keys.pageTurnGlobal && keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
                 prompter.pageTurnForwards();
                 return
             }
@@ -3092,16 +3087,16 @@ Flickable {
         else if (event.key===keys.toggle && event.modifiers===keys.toggleModifiers)
             // Toggle state
             prompter.toggle();
-        else if (keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
+        else if (!keys.pageTurnBackwardsGlobal && keys.pageTurnBackwards !== Qt.Key_unknown && event.key===keys.pageTurnBackwards && event.modifiers===keys.pageTurnBackwardsModifiers) {
             prompter.pageTurnBackwards();
         }
-        else if (keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
+        else if (!keys.pageTurnGlobal && keys.pageTurn !== Qt.Key_unknown && event.key===keys.pageTurn && event.modifiers===keys.pageTurnModifiers) {
             prompter.pageTurnForwards();
         }
-        else if (event.key===keys.skipBackwards && event.modifiers===keys.skipBackwardsModifiers) {
+        else if (!keys.skipBackwardsGlobal && event.key===keys.skipBackwards && event.modifiers===keys.skipBackwardsModifiers) {
             prompter.skipBackwards();
         }
-        else if (event.key===keys.skipForward && event.modifiers===keys.skipForwardModifiers) {
+        else if (!keys.skipForwardGlobal && event.key===keys.skipForward && event.modifiers===keys.skipForwardModifiers) {
             prompter.skipForwards();
         }
         else if (event.key===keys.previousMarker && event.modifiers===keys.previousMarkerModifiers)
