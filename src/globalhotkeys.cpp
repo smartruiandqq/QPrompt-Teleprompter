@@ -30,6 +30,9 @@
 #endif
 #include <QGuiApplication>
 #include <QSettings>
+#if defined(QHotkey_FOUND) && defined(Q_OS_WIN)
+#include <qt_windows.h>
+#endif
 
 GlobalHotkeys::GlobalHotkeys(AppController *controller) : AbstractInputSource(controller)
 #if defined(QHotkey_FOUND)
@@ -1183,6 +1186,49 @@ void GlobalHotkeys::m_setGlobalShortcut(Qt::Key key, Qt::KeyboardModifiers modif
 // Set for QHotkey
 #if defined(QHotkey_FOUND)
 void GlobalHotkeys::m_setHotkeyShortcut(Qt::Key key, Qt::KeyboardModifiers modifiers, QHotkey *hotkey) {
+#if defined(Q_OS_WIN)
+    if (modifiers.testFlag(Qt::KeypadModifier)) {
+        quint32 nativeKey = 0;
+        if (key >= Qt::Key_0 && key <= Qt::Key_9)
+            nativeKey = VK_NUMPAD0 + (key - Qt::Key_0);
+        else {
+            switch (key) {
+            case Qt::Key_Slash:
+                nativeKey = VK_DIVIDE;
+                break;
+            case Qt::Key_Asterisk:
+                nativeKey = VK_MULTIPLY;
+                break;
+            case Qt::Key_Minus:
+                nativeKey = VK_SUBTRACT;
+                break;
+            case Qt::Key_Plus:
+                nativeKey = VK_ADD;
+                break;
+            case Qt::Key_Period:
+            case Qt::Key_Comma:
+                nativeKey = VK_DECIMAL;
+                break;
+            default:
+                break;
+            }
+        }
+
+        if (nativeKey) {
+            quint32 nativeModifiers = 0;
+            if (modifiers.testFlag(Qt::ShiftModifier))
+                nativeModifiers |= MOD_SHIFT;
+            if (modifiers.testFlag(Qt::ControlModifier))
+                nativeModifiers |= MOD_CONTROL;
+            if (modifiers.testFlag(Qt::AltModifier))
+                nativeModifiers |= MOD_ALT;
+            if (modifiers.testFlag(Qt::MetaModifier))
+                nativeModifiers |= MOD_WIN;
+            hotkey->setNativeShortcut(QHotkey::NativeShortcut(nativeKey, nativeModifiers), true);
+            return;
+        }
+    }
+#endif
     hotkey->setShortcut(key, modifiers, true);
 }
 #endif
