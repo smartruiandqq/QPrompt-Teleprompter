@@ -736,6 +736,18 @@ void GlobalHotkeys::m_initializeSource() {
     modifier = static_cast<Qt::KeyboardModifier>(settings.value(QLatin1String("hotkey/mod") + metaEnum.valueToKey(VelocityTo10), Qt::ControlModifier).toInt());
     m_setGlobalShortcut(key, modifier, VelocityTo10, true);
 
+    // The legacy Global Hotkeys page has been removed. Do not leave any of
+    // its persisted shortcuts registered in the background, because they can
+    // consume keys intended for the normal in-window bindings. The four page
+    // actions are registered later by Prompter.qml only while their individual
+    // Global checkboxes are enabled and QPrompt is not the active window.
+    for (int action = TogglePrompter; action <= VelocityTo10; ++action) {
+        m_setGlobalShortcut(Qt::Key_unknown,
+                            Qt::NoModifier,
+                            static_cast<GlobalHotkeys::Action>(action),
+                            true);
+    }
+
     // Holdability
     m_rewindAction->setCheckable(true);
     m_fastForwardAction->setCheckable(true);
